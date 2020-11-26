@@ -79,6 +79,29 @@ void imprimeLista(objeto *lista, int i){
     }
 }
 
+void imprimeNext(objeto *lista, char *opcao){
+    objeto *aux;
+
+    if (strcmp(opcao, "-p") == 0){
+            aux = lista->nextPrioridade;
+            printf("%d", aux->cel.prior);
+            printf(" %d", aux->cel.chegada.hh);
+            printf(":%d", aux->cel.chegada.mm);
+            printf(":%d", aux->cel.chegada.ss);
+            printf(" %s\n", aux->cel.descricao);
+        
+    }
+    else{
+            aux = lista->nextTime;
+            printf("%d", aux->cel.prior);
+            printf(" %d", aux->cel.chegada.hh);
+            printf(":%d", aux->cel.chegada.mm);
+            printf(":%d", aux->cel.chegada.ss);
+            printf(" %s\n", aux->cel.descricao);
+    }
+}
+
+
 int converteHpS(int hr, int mn, int sg){
 	return (hr*3600) + (mn*60) + sg;
 }

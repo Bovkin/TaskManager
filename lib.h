@@ -22,4 +22,5 @@ typedef struct objeto{
 void cadastraProcesso(celula componente, objeto *lista);
 objeto* alocaNovoObjeto(celula componente);
 void imprimeLista(objeto *lista, int i);
+void imprimeNext(objeto *lista, char *opcao);
 int converteHpS(int hr, int mn, int sg);
