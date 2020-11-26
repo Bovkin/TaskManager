@@ -29,8 +29,8 @@ void cadastraProcesso(celula componente, objeto *lista){
     else{
         /* Cabeça */
         aux = lista;
-        tempo = converteHpS(novoObjeto->cel.chegada.hh, novoObjeto->cel.chegada.mm, novoObjeto->cel.chegada.ss);
-        while (aux->nextTime != NULL && converteHpS(aux->nextTime->cel.chegada.hh, aux->nextTime->cel.chegada.mm, aux->nextTime->cel.chegada.ss) < tempo){
+        tempo = converteHmsEmSegundos(novoObjeto->cel.chegada.hh, novoObjeto->cel.chegada.mm, novoObjeto->cel.chegada.ss);
+        while (aux->nextTime != NULL && converteHmsEmSegundos(aux->nextTime->cel.chegada.hh, aux->nextTime->cel.chegada.mm, aux->nextTime->cel.chegada.ss) < tempo){
             aux = aux->nextTime;
         }
         novoObjeto->nextTime = aux->nextTime;
@@ -55,6 +55,7 @@ objeto *alocaNovoObjeto(celula componente){
     return novoObjeto;
 }
 
+/* Função que realiza a impressão da lista inteira */
 void imprimeLista(objeto *lista, int i){
     objeto *aux;
 
@@ -79,29 +80,30 @@ void imprimeLista(objeto *lista, int i){
     }
 }
 
+/* Função que realiza a impressão através do comando NEXT */
 void imprimeNext(objeto *lista, char *opcao){
     objeto *aux;
 
     if (strcmp(opcao, "-p") == 0){
-            aux = lista->nextPrioridade;
-            printf("%d", aux->cel.prior);
-            printf(" %d", aux->cel.chegada.hh);
-            printf(":%d", aux->cel.chegada.mm);
-            printf(":%d", aux->cel.chegada.ss);
-            printf(" %s\n", aux->cel.descricao);
-        
+        aux = lista->nextPrioridade;
+        printf("%d", aux->cel.prior);
+        printf(" %d", aux->cel.chegada.hh);
+        printf(":%d", aux->cel.chegada.mm);
+        printf(":%d", aux->cel.chegada.ss);
+        printf(" %s\n", aux->cel.descricao);
     }
     else{
-            aux = lista->nextTime;
-            printf("%d", aux->cel.prior);
-            printf(" %d", aux->cel.chegada.hh);
-            printf(":%d", aux->cel.chegada.mm);
-            printf(":%d", aux->cel.chegada.ss);
-            printf(" %s\n", aux->cel.descricao);
+        aux = lista->nextTime;
+        printf("%d", aux->cel.prior);
+        printf(" %d", aux->cel.chegada.hh);
+        printf(":%d", aux->cel.chegada.mm);
+        printf(":%d", aux->cel.chegada.ss);
+        printf(" %s\n", aux->cel.descricao);
     }
 }
 
-
-int converteHpS(int hr, int mn, int sg){
+/* Função utilizada para deixar a base de horarios igualitaria e assim realizar a comparação. */
+/* Utilizamos a conversão para segundos */
+int converteHmsEmSegundos(int hr, int mn, int sg){
 	return (hr*3600) + (mn*60) + sg;
 }
