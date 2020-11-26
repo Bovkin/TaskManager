@@ -107,3 +107,14 @@ void imprimeNext(objeto *lista, char *opcao){
 int converteHmsEmSegundos(int hr, int mn, int sg){
 	return (hr*3600) + (mn*60) + sg;
 }
+
+void re_C(objeto *lista, char *opcao){
+    if(strcmp(opcao, "-p") == 0){
+        objeto *lixo;
+        lixo = lista->nextPrioridade;
+        lista->nextPrioridade = lixo->nextPrioridade;
+        free(lixo);
+    }else{
+
+    }
+}

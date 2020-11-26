@@ -34,8 +34,12 @@ int main()
             scanf("%s", opcao);
             imprimeLista(lista, opcao);
             scanf("%s", comando);
+        }else if(strcmp(comando, "exec") == 0){
+            scanf("%s", opcao);
+            re_C(lista, opcao);
+            scanf("%s", comando);
         }
     }
-    
+
     return 0;
 }

@@ -24,3 +24,4 @@ objeto* alocaNovoObjeto(celula componente);
 void imprimeLista(objeto *lista, char *opcao);
 void imprimeNext(objeto *lista, char *opcao);
 int converteHmsEmSegundos(int hr, int mn, int sg);
+void re_C(objeto *lista, char *opcao);
