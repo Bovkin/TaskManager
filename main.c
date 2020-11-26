@@ -24,20 +24,18 @@ int main()
             scanf("%s", opcao);
             imprimeNext(lista, opcao);
             scanf("%s", comando);
-        }else{
+        }else if(strcmp(comando, "add") == 0){
             scanf("%d", &(componente.prior));
             scanf("%d:%d:%d", &(componente.chegada.hh), &(componente.chegada.mm), &(componente.chegada.ss));
             scanf("%s", componente.descricao);
             cadastraProcesso(componente, lista);
             scanf("%s", comando);
+        }else if(strcmp(comando, "print") == 0){
+            scanf("%s", opcao);
+            imprimeLista(lista, opcao);
+            scanf("%s", comando);
         }
     }
     
-    /*imprimeLista(lista, 0);
-    imprimeLista(lista, 12);
-    imprimeNext(lista, 12);
-    imprimeNext(lista, 0);*/
-
-
     return 0;
 }

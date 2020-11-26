@@ -56,10 +56,10 @@ objeto *alocaNovoObjeto(celula componente){
 }
 
 /* Função que realiza a impressão da lista inteira */
-void imprimeLista(objeto *lista, int i){
+void imprimeLista(objeto *lista, char *opcao){
     objeto *aux;
 
-    if (i == 0)
+    if (strcmp(opcao, "-p") == 0)
     {
         for (aux = lista->nextPrioridade; aux != NULL; aux = aux->nextPrioridade){
             printf("%d", aux->cel.prior);
