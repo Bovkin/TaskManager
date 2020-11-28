@@ -13,6 +13,7 @@ typedef struct{
     char descricao[MAX_DESCR + 1];
 } celula;
 
+/* Armazena informações da lista */
 typedef struct objeto{
     celula cel;
     struct objeto *nextPrioridade;
@@ -25,3 +26,7 @@ void imprimeLista(objeto *lista, char *opcao);
 void imprimeNext(objeto *lista, char *opcao);
 int converteHmsEmSegundos(int hr, int mn, int sg);
 void re_C(objeto *lista, char *opcao);
+void modificaProcessoPrioridade(celula componente, celula componenteNovo, objeto *lista);
+void modificaProcessoTempo(celula componente, celula componenteNovo, objeto *lista);
+void inserePrioridade(objeto *componente, objeto *lista);
+void insereTempo(objeto *componente, objeto *lista);
