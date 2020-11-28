@@ -50,55 +50,60 @@ objeto *alocaNovoObjeto(celula componente){
     }
     else
     {
-        printf("Erro ao alocar memória\n");
+        printf("ERRO AO ALOCAR MEMORIA\n");
     }
     return novoObjeto;
 }
 
 /* Função que realiza a impressão da lista inteira */
 void imprimeLista(objeto *lista, char *opcao){
-    objeto *aux;
+    objeto *aux = NULL;
 
-    if (strcmp(opcao, "-p") == 0)
-    {
-        for (aux = lista->nextPrioridade; aux != NULL; aux = aux->nextPrioridade){
-            printf("%d", aux->cel.prior);
-            printf(" %02d", aux->cel.chegada.hh);
-            printf(":%02d", aux->cel.chegada.mm);
-            printf(":%02d", aux->cel.chegada.ss);
-            printf(" %s\n", aux->cel.descricao);
+    if(lista->nextTime != NULL){
+        if (strcmp(opcao, "-p") == 0)
+        {
+            for (aux = lista->nextPrioridade; aux != NULL; aux = aux->nextPrioridade){
+                printf("%02d", aux->cel.prior);
+                printf(" %02d", aux->cel.chegada.hh);
+                printf(":%02d", aux->cel.chegada.mm);
+                printf(":%02d", aux->cel.chegada.ss);
+                printf(" %s\n", aux->cel.descricao);
+            }
+        }else{
+            for (aux = lista->nextTime; aux != NULL; aux = aux->nextTime){
+                printf("%02d", aux->cel.prior);
+                printf(" %02d", aux->cel.chegada.hh);
+                printf(":%02d", aux->cel.chegada.mm);
+                printf(":%02d", aux->cel.chegada.ss);
+                printf(" %s\n", aux->cel.descricao);
+            }
         }
-    }
-    else{
-        for (aux = lista->nextTime; aux != NULL; aux = aux->nextTime){
-            printf("%d", aux->cel.prior);
-            printf(" %02d", aux->cel.chegada.hh);
-            printf(":%02d", aux->cel.chegada.mm);
-            printf(":%02d", aux->cel.chegada.ss);
-            printf(" %s\n", aux->cel.descricao);
-        }
+    }else{
+        printf("LISTA VAZIA!\n");
     }
 }
 
 /* Função que realiza a impressão através do comando NEXT */
 void imprimeNext(objeto *lista, char *opcao){
-    objeto *aux;
-
-    if (strcmp(opcao, "-p") == 0){
-        aux = lista->nextPrioridade;
-        printf("%d", aux->cel.prior);
-        printf(" %d", aux->cel.chegada.hh);
-        printf(":%d", aux->cel.chegada.mm);
-        printf(":%d", aux->cel.chegada.ss);
-        printf(" %s\n", aux->cel.descricao);
-    }
-    else{
-        aux = lista->nextTime;
-        printf("%d", aux->cel.prior);
-        printf(" %d", aux->cel.chegada.hh);
-        printf(":%d", aux->cel.chegada.mm);
-        printf(":%d", aux->cel.chegada.ss);
-        printf(" %s\n", aux->cel.descricao);
+    objeto *aux = NULL;
+    if(lista->nextPrioridade != NULL){
+        if (strcmp(opcao, "-p") == 0){
+            aux = lista->nextPrioridade;
+            printf("%02d", aux->cel.prior);
+            printf(" %02d", aux->cel.chegada.hh);
+            printf(":%02d", aux->cel.chegada.mm);
+            printf(":%02d", aux->cel.chegada.ss);
+            printf(" %s\n", aux->cel.descricao);
+        }else{
+            aux = lista->nextTime;
+            printf("%02d", aux->cel.prior);
+            printf(" %02d", aux->cel.chegada.hh);
+            printf(":%02d", aux->cel.chegada.mm);
+            printf(":%02d", aux->cel.chegada.ss);
+            printf(" %s\n", aux->cel.descricao);
+        }
+    }else{
+        printf("LISTA VAZIA\n");
     }
 }
 
@@ -108,17 +113,39 @@ int converteHmsEmSegundos(int hr, int mn, int sg){
 	return (hr*3600) + (mn*60) + sg;
 }
 
-void re_C(objeto *lista, char *opcao){
-    if(strcmp(opcao, "-p") == 0){
-        objeto *lixo;
-        lixo = lista->nextPrioridade;
-        lista->nextPrioridade = lixo->nextPrioridade;
-        free(lixo);
-    }else{
-        objeto *lixo;
+void re_T(objeto *lista, char *opcao){
+    objeto *lixo, *aux;
+
+    if(lista->nextTime != NULL){
+        aux = lista;
+
         lixo = lista->nextTime;
         lista->nextTime = lixo->nextTime;
+        while (aux->nextPrioridade != NULL && aux->nextPrioridade->cel.prior != lixo->cel.prior){
+            aux = aux->nextPrioridade;
+        }
+        aux->nextPrioridade = aux->nextPrioridade->nextPrioridade;
         free(lixo);
+    }else{
+        printf("NAO HA PROCESSOS PARA EXECUTAR!\n");
+    }
+}
+
+void re_P(objeto *lista, char *opcao){
+    objeto *lixo, *aux;
+
+    if(lista->nextPrioridade != NULL){
+        aux = lista;
+        
+        lixo = lista->nextPrioridade;
+        lista->nextPrioridade = lixo->nextPrioridade;
+        while (aux->nextTime != NULL && aux->nextTime->cel.prior != lixo->cel.prior){
+            aux = aux->nextTime;
+        }
+        aux->nextTime = aux->nextTime->nextTime;
+        free(lixo);
+    }else{
+        printf("NAO HA PROCESSOS PARA EXECUTAR!\n");
     }
 }
 
@@ -137,16 +164,18 @@ void modificaProcessoPrioridade(celula componente, celula componenteNovo, objeto
 
 void modificaProcessoTempo(celula componente, celula componenteNovo, objeto *lista){
     objeto *aux, *objetoAntigo;
-    int tempoProcesso;
+    int tempoProcesso2;
 
     aux = lista;
 
-    tempoProcesso = converteHmsEmSegundos(componenteNovo.chegada.hh, componenteNovo.chegada.mm, componenteNovo.chegada.ss);
-    while (aux->nextTime != NULL && converteHmsEmSegundos(aux->nextTime->cel.chegada.hh, aux->nextTime->cel.chegada.mm, aux->nextTime->cel.chegada.ss) < tempoProcesso){
+    tempoProcesso2 = converteHmsEmSegundos(componente.chegada.hh, componente.chegada.mm, componente.chegada.ss);
+    while (aux->nextTime != NULL && converteHmsEmSegundos(aux->nextTime->cel.chegada.hh, aux->nextTime->cel.chegada.mm, aux->nextTime->cel.chegada.ss) != tempoProcesso2){
         aux = aux->nextTime;
     }
     objetoAntigo = aux->nextTime;
-    objetoAntigo->cel.chegada = componenteNovo.chegada;
+    objetoAntigo->cel.chegada.hh = componenteNovo.chegada.hh;
+    objetoAntigo->cel.chegada.mm = componenteNovo.chegada.mm;
+    objetoAntigo->cel.chegada.ss = componenteNovo.chegada.ss;
     aux->nextTime = aux->nextTime->nextTime;
     insereTempo(objetoAntigo, lista);
 }
@@ -187,5 +216,48 @@ void insereTempo(objeto *novoObjeto, objeto *lista){
         }
         novoObjeto->nextTime = aux->nextTime;
         aux->nextTime = novoObjeto;
+    }
+}
+
+/*  */
+void menu(char *comando, objeto *lista){
+
+    char opcao[2];
+    celula componente, componenteNovo;
+
+    if(strcmp(comando, "next") == 0){
+        scanf("%s", opcao);
+        imprimeNext(lista, opcao);
+        printf("\n");
+        scanf("%s", comando);
+    }else if(strcmp(comando, "add") == 0){
+        scanf("%d", &(componente.prior));
+        scanf("%d:%d:%d", &(componente.chegada.hh), &(componente.chegada.mm), &(componente.chegada.ss));
+        scanf("%s", componente.descricao);
+        cadastraProcesso(componente, lista);
+        scanf("%s", comando);
+    }else if(strcmp(comando, "print") == 0){
+        scanf("%s", opcao);
+        imprimeLista(lista, opcao);
+        printf("\n");
+        scanf("%s", comando);
+    }else if(strcmp(comando, "exec") == 0){
+        scanf("%s", opcao);
+        if(strcmp(opcao, "-p") == 0){
+            re_P(lista, opcao);
+        }else{
+            re_T(lista, opcao);
+        }
+        scanf("%s", comando);
+    }else if(strcmp(comando, "change") == 0){
+        scanf("%s", opcao);
+        if(strcmp(opcao, "-t") == 0){
+            scanf("%d:%d:%d|%d:%d:%d", &(componente.chegada.hh), &(componente.chegada.mm), &(componente.chegada.ss), &(componenteNovo.chegada.hh), &(componenteNovo.chegada.mm), &(componenteNovo.chegada.ss));
+            modificaProcessoTempo(componente, componenteNovo, lista);
+        }else{
+            scanf("%d|%d", &(componente.prior), &(componenteNovo.prior));
+            modificaProcessoPrioridade(componente, componenteNovo, lista);
+        }
+        scanf("%s", comando);
     }
 }
