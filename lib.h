@@ -20,13 +20,14 @@ typedef struct objeto{
     struct objeto *nextTime;
 } objeto;
 
+/* PROTOTIPO DAS FUNÇÕES */
 void cadastraProcesso(celula componente, objeto *lista);
 objeto* alocaNovoObjeto(celula componente);
 void imprimeLista(objeto *lista, char *opcao);
 void imprimeNext(objeto *lista, char *opcao);
 int converteHmsEmSegundos(int hr, int mn, int sg);
-void re_P(objeto *lista, char *opcao);
-void re_T(objeto *lista, char *opcao);
+void removePrioridade(objeto *lista, char *opcao);
+void removeTempo(objeto *lista, char *opcao);
 void modificaProcessoPrioridade(celula componente, celula componenteNovo, objeto *lista);
 void modificaProcessoTempo(celula componente, celula componenteNovo, objeto *lista);
 void inserePrioridade(objeto *componente, objeto *lista);

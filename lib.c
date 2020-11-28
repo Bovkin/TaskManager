@@ -3,18 +3,19 @@
 #include <string.h>
 #include "lib.h"
 
+/* FUNÇÃO UTILIZADA PARA CADASTRAR ORDENADAMENTE */
 void cadastraProcesso(celula componente, objeto *lista){
     objeto *novoObjeto, *aux;
 
     int tempoObjeto;
 
     novoObjeto = alocaNovoObjeto(componente);
-    /* Prioridade */
+    /* PRIORIDADE */
     if (lista->nextPrioridade == NULL){
         lista->nextPrioridade = novoObjeto;
     }
     else{
-        /* Cabeça */
+        /* CABEÇA */
         aux = lista;
         while (aux->nextPrioridade != NULL && aux->nextPrioridade->cel.prior > novoObjeto->cel.prior){
             aux = aux->nextPrioridade;
@@ -22,12 +23,12 @@ void cadastraProcesso(celula componente, objeto *lista){
         novoObjeto->nextPrioridade = aux->nextPrioridade;
         aux->nextPrioridade = novoObjeto;
     }
-    /* Time */
+    /* TEMPO */
     if (lista->nextTime == NULL){
         lista->nextTime = novoObjeto;
     }
     else{
-        /* Cabeça */
+        /* CABEÇA */
         aux = lista;
         tempoObjeto = converteHmsEmSegundos(novoObjeto->cel.chegada.hh, novoObjeto->cel.chegada.mm, novoObjeto->cel.chegada.ss);
         while (aux->nextTime != NULL && converteHmsEmSegundos(aux->nextTime->cel.chegada.hh, aux->nextTime->cel.chegada.mm, aux->nextTime->cel.chegada.ss) < tempoObjeto){
@@ -37,7 +38,7 @@ void cadastraProcesso(celula componente, objeto *lista){
         aux->nextTime = novoObjeto;
     }
 }
-
+/* FUNÇÃO QUE REALIZA A ALOCAÇÃO DE MEMÓRIA PARA O NOVO OBJETO */
 objeto *alocaNovoObjeto(celula componente){
     objeto *novoObjeto;
 
@@ -55,7 +56,7 @@ objeto *alocaNovoObjeto(celula componente){
     return novoObjeto;
 }
 
-/* Função que realiza a impressão da lista inteira */
+/* FUNÇÃO QUE REALIZA A IMPRESSÃO DA LISTA INTEIRA */
 void imprimeLista(objeto *lista, char *opcao){
     objeto *aux = NULL;
 
@@ -83,7 +84,7 @@ void imprimeLista(objeto *lista, char *opcao){
     }
 }
 
-/* Função que realiza a impressão através do comando NEXT */
+/* FUNÇÃO QUE REALIZA A IMPRESSÃO ATRÁVES DO COMANDO NEXT */
 void imprimeNext(objeto *lista, char *opcao){
     objeto *aux = NULL;
     if(lista->nextPrioridade != NULL){
@@ -107,13 +108,14 @@ void imprimeNext(objeto *lista, char *opcao){
     }
 }
 
-/* Função utilizada para deixar a base de horarios igualitaria e assim realizar a comparação. */
-/* Utilizamos a conversão para segundos */
+/* FUNÇÃO UTILIZADA PARA DEIXA A BASE DE HORARIOS IGUALITARIA. AJUDANDO A REALIZAR AS DIVERSAS COMPARAÇÕES */
+/* UTILIZAMOS A CONVERSÃO PARA SEGUNDOS */
 int converteHmsEmSegundos(int hr, int mn, int sg){
+    /* CONVERTE HORAS, MINUTOS E SEGUNDO EM SEGUNDOS */
 	return (hr*3600) + (mn*60) + sg;
 }
-
-void re_T(objeto *lista, char *opcao){
+/* FUNÇÃO QUE REALIZA A REMOÇÃO DO OBJETO NA LISTA ATRAVES DO CHANGE -T */
+void removeTempo(objeto *lista, char *opcao){
     objeto *lixo, *aux;
 
     if(lista->nextTime != NULL){
@@ -130,8 +132,8 @@ void re_T(objeto *lista, char *opcao){
         printf("NAO HA PROCESSOS PARA EXECUTAR!\n");
     }
 }
-
-void re_P(objeto *lista, char *opcao){
+/* FUNÇÃO QUE REALIZA A REMOÇÃO DO OBJETO NA LISTA ATRAVES DO CHANGE -P */
+void removePrioridade(objeto *lista, char *opcao){
     objeto *lixo, *aux;
 
     if(lista->nextPrioridade != NULL){
@@ -148,7 +150,7 @@ void re_P(objeto *lista, char *opcao){
         printf("NAO HA PROCESSOS PARA EXECUTAR!\n");
     }
 }
-
+/* FUNÇÃO QUE REALIZA A MODIFICAÇÃO DO OBJETO NA LISTA CONFORME A PRIORIDADE */
 void modificaProcessoPrioridade(celula componente, celula componenteNovo, objeto *lista){
     objeto *aux, *objetoAntigo;
     aux = lista;
@@ -161,7 +163,7 @@ void modificaProcessoPrioridade(celula componente, celula componenteNovo, objeto
     aux->nextPrioridade = aux->nextPrioridade->nextPrioridade;
     inserePrioridade(objetoAntigo, lista);
 }
-
+/* FUNÇÃO QUE REALIZA A MODIFICAÇÃO DO OBJETO NA LISTA CONFORME A PRIORIDADE DE TEMPO */
 void modificaProcessoTempo(celula componente, celula componenteNovo, objeto *lista){
     objeto *aux, *objetoAntigo;
     int tempoProcesso2;
@@ -180,6 +182,7 @@ void modificaProcessoTempo(celula componente, celula componenteNovo, objeto *lis
     insereTempo(objetoAntigo, lista);
 }
 
+/* FUNÇÃO QUE REALIZA A INSERÇÃO DO OBJETO NA LISTA CONFORME A PRIORIDADE */
 void inserePrioridade(objeto *novoObjeto, objeto *lista){
 
     objeto *aux;
@@ -197,7 +200,7 @@ void inserePrioridade(objeto *novoObjeto, objeto *lista){
         aux->nextPrioridade = novoObjeto;
     }
 }
-
+/* FUNÇÃO QUE REALIZA A INSERÇÃO DO OBJETO NA LISTA CONFORME A PRIORIDADE DE TEMPO */
 void insereTempo(objeto *novoObjeto, objeto *lista){
 
     objeto *aux;
@@ -208,7 +211,7 @@ void insereTempo(objeto *novoObjeto, objeto *lista){
         lista->nextTime = novoObjeto;
     }
     else{
-        /* Cabeça */
+        /* CABEÇA */
         aux = lista;
         tempo = converteHmsEmSegundos(novoObjeto->cel.chegada.hh, novoObjeto->cel.chegada.mm, novoObjeto->cel.chegada.ss);
         while (aux->nextTime != NULL && converteHmsEmSegundos(aux->nextTime->cel.chegada.hh, aux->nextTime->cel.chegada.mm, aux->nextTime->cel.chegada.ss) < tempo){
@@ -219,7 +222,7 @@ void insereTempo(objeto *novoObjeto, objeto *lista){
     }
 }
 
-/*  */
+/* FUNÇÃO QUE TEM COMO TAREFA A EXIBIÇÃO E REQUISIÇÃO DAS ENTRADAS DO PROGRAMA */
 void menu(char *comando, objeto *lista){
 
     char opcao[2];
@@ -244,9 +247,9 @@ void menu(char *comando, objeto *lista){
     }else if(strcmp(comando, "exec") == 0){
         scanf("%s", opcao);
         if(strcmp(opcao, "-p") == 0){
-            re_P(lista, opcao);
+            removePrioridade(lista, opcao);
         }else{
-            re_T(lista, opcao);
+            removeTempo(lista, opcao);
         }
         scanf("%s", comando);
     }else if(strcmp(comando, "change") == 0){
