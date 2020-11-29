@@ -1,3 +1,9 @@
+/* 
+ALGORITMOS E PROGRAMAÇÃO II - 2020 - UFMS
+ATIVIDADE PRÁTICA II - GERENTE PROCESSOS
+ALUNOS: DANILO GOMES DA SILVA e ELTON IGOR CUNHA PEREIRA
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
