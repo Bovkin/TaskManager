@@ -17,9 +17,11 @@ void cadastraProcesso(celula componente, objeto *lista){
     else{
         /* CABEÇA */
         aux = lista;
+        /* ITERANDO ATÉ QUE ENCONTRE O OBJETO RESPECTIVO E INSERA NA ORDEM CORRETO */
         while (aux->nextPrioridade != NULL && aux->nextPrioridade->cel.prior > novoObjeto->cel.prior){
             aux = aux->nextPrioridade;
         }
+        /* INSERÇÃO NA ORDEM CORRETA */
         novoObjeto->nextPrioridade = aux->nextPrioridade;
         aux->nextPrioridade = novoObjeto;
     }
@@ -30,10 +32,13 @@ void cadastraProcesso(celula componente, objeto *lista){
     else{
         /* CABEÇA */
         aux = lista;
+        /* CHAMANDO A FUNÇÃO DE TEMPO PARA REALIZAR A COMPARAÇÃO NO WHILE */
         tempoObjeto = converteHmsEmSegundos(novoObjeto->cel.chegada.hh, novoObjeto->cel.chegada.mm, novoObjeto->cel.chegada.ss);
+        /* ITERANDO ATÉ QUE ENCONTRE O OBJETO RESPECTIVO E INSERA NA ORDEM CORRETO */
         while (aux->nextTime != NULL && converteHmsEmSegundos(aux->nextTime->cel.chegada.hh, aux->nextTime->cel.chegada.mm, aux->nextTime->cel.chegada.ss) < tempoObjeto){
             aux = aux->nextTime;
         }
+        /* INSERÇÃO NA ORDEM CORRETA */
         novoObjeto->nextTime = aux->nextTime;
         aux->nextTime = novoObjeto;
     }
@@ -85,6 +90,7 @@ void imprimeLista(objeto *lista, char *opcao){
 }
 
 /* FUNÇÃO QUE REALIZA A IMPRESSÃO ATRÁVES DO COMANDO NEXT */
+/* LISTANDO APENAS O PRIMEIRO ELEMENTO DA LISTA(O MAIS PRIORITARIO) */
 void imprimeNext(objeto *lista, char *opcao){
     objeto *aux = NULL;
     if(lista->nextPrioridade != NULL){
@@ -119,13 +125,17 @@ void removeTempo(objeto *lista, char *opcao){
     objeto *lixo, *aux;
 
     if(lista->nextTime != NULL){
+        /* CABEÇA */
         aux = lista;
-
+        /* LIXO RECEBE O MAIS PRIORITARIO, QUE É FEITO ATRÁVES DA FUNÇÃO CHANGE */
         lixo = lista->nextTime;
+        /* LISTA RECEBE O PROXIMO DO QUAL SERÁ O LIXO */
         lista->nextTime = lixo->nextTime;
+        /* REALIZO A ITERAÇÃO NA PRIORIDADE PARA REMOVE-LO TAMBÉM */
         while (aux->nextPrioridade != NULL && aux->nextPrioridade->cel.prior != lixo->cel.prior){
             aux = aux->nextPrioridade;
         }
+        /* FAÇO O QUE QUERO REMOVER RECEBER O PROXIMO DELE, COM ISSO ELE DEIXA DE EXISTIR */
         aux->nextPrioridade = aux->nextPrioridade->nextPrioridade;
         free(lixo);
     }else{
@@ -137,13 +147,17 @@ void removePrioridade(objeto *lista, char *opcao){
     objeto *lixo, *aux;
 
     if(lista->nextPrioridade != NULL){
+        /* CABEÇA */
         aux = lista;
-        
+        /* LIXO RECEBE O MAIS PRIORITARIO, QUE É FEITO ATRÁVES DA FUNÇÃO CHANGE */
         lixo = lista->nextPrioridade;
+        /* LISTA RECEBE O PROXIMO DO QUAL SERÁ O LIXO */
         lista->nextPrioridade = lixo->nextPrioridade;
+        /* REALIZO A ITERAÇÃO NA PRIORIDADE TEMPO PARA REMOVE-LO TAMBÉM */
         while (aux->nextTime != NULL && aux->nextTime->cel.prior != lixo->cel.prior){
             aux = aux->nextTime;
         }
+        /* FAÇO O QUE QUERO REMOVER RECEBER O PROXIMO DELE, COM ISSO ELE DEIXA DE EXISTIR */
         aux->nextTime = aux->nextTime->nextTime;
         free(lixo);
     }else{
@@ -153,32 +167,40 @@ void removePrioridade(objeto *lista, char *opcao){
 /* FUNÇÃO QUE REALIZA A MODIFICAÇÃO DO OBJETO NA LISTA CONFORME A PRIORIDADE */
 void modificaProcessoPrioridade(celula componente, celula componenteNovo, objeto *lista){
     objeto *aux, *objetoAntigo;
+    /* CABEÇA */
     aux = lista;
-    
+    /* ITERA ATÉ ENCONTRAR O ELEMENTO QUE QUERO */
     while (aux->nextPrioridade != NULL && aux->nextPrioridade->cel.prior > componente.prior){
         aux = aux->nextPrioridade;
     }
+    /* AO ENCONTRAR O ELEMENTO, FAÇO A ATRIBUIÇÃO DA PRIORIDADE NOVA */
     objetoAntigo = aux->nextPrioridade;
     objetoAntigo->cel.prior = componenteNovo.prior;
+    /* FAÇO COM QUE ELE RECEBA O PROXIMO ELEMENTO DELE */
     aux->nextPrioridade = aux->nextPrioridade->nextPrioridade;
+    /* APÓS ATRIBUIR A NOVA PRIORIDADE CHAMO PARA REINSERIR NA LISTA */
     inserePrioridade(objetoAntigo, lista);
 }
 /* FUNÇÃO QUE REALIZA A MODIFICAÇÃO DO OBJETO NA LISTA CONFORME A PRIORIDADE DE TEMPO */
 void modificaProcessoTempo(celula componente, celula componenteNovo, objeto *lista){
     objeto *aux, *objetoAntigo;
     int tempoProcesso2;
-
+    /* CABEÇA */
     aux = lista;
-
+    /* CHAMO A FUNÇÃO PARA REALIZAR A COMPARAÇÃO ATRAVÉS DO TEMPO EM SEGUNDOS */
     tempoProcesso2 = converteHmsEmSegundos(componente.chegada.hh, componente.chegada.mm, componente.chegada.ss);
+    /* ITERA ATÉ ENCONTRAR O ELEMENTO QUE QUERO */
     while (aux->nextTime != NULL && converteHmsEmSegundos(aux->nextTime->cel.chegada.hh, aux->nextTime->cel.chegada.mm, aux->nextTime->cel.chegada.ss) != tempoProcesso2){
         aux = aux->nextTime;
     }
+    /* AO ENCONTRAR O ELEMENTO, FAÇO A ATRIBUIÇÃO DA PRIORIDADE DE TEMPO NOVA */
     objetoAntigo = aux->nextTime;
     objetoAntigo->cel.chegada.hh = componenteNovo.chegada.hh;
     objetoAntigo->cel.chegada.mm = componenteNovo.chegada.mm;
     objetoAntigo->cel.chegada.ss = componenteNovo.chegada.ss;
+    /* FAÇO COM QUE ELE RECEBA O PROXIMO ELEMENTO DELE */
     aux->nextTime = aux->nextTime->nextTime;
+    /* APÓS ATRIBUIR A NOVA PRIORIDADE DE TEMPO CHAMO PARA REINSERIR NA LISTA */
     insereTempo(objetoAntigo, lista);
 }
 
@@ -191,11 +213,13 @@ void inserePrioridade(objeto *novoObjeto, objeto *lista){
         lista->nextPrioridade = novoObjeto;
     }
     else{
-        /* Cabeça */
+        /* CABEÇA */
         aux = lista;
+        /* ITERANDO ATÉ QUE ENCONTRE O OBJETO RESPECTIVO E INSERA NA ORDEM CORRETO */
         while (aux->nextPrioridade != NULL && aux->nextPrioridade->cel.prior > novoObjeto->cel.prior){
             aux = aux->nextPrioridade;
         }
+        /* INSERÇÃO NA ORDEM CORRETA */
         novoObjeto->nextPrioridade = aux->nextPrioridade;
         aux->nextPrioridade = novoObjeto;
     }
@@ -214,9 +238,11 @@ void insereTempo(objeto *novoObjeto, objeto *lista){
         /* CABEÇA */
         aux = lista;
         tempo = converteHmsEmSegundos(novoObjeto->cel.chegada.hh, novoObjeto->cel.chegada.mm, novoObjeto->cel.chegada.ss);
+        /* ITERANDO ATÉ QUE ENCONTRE O OBJETO RESPECTIVO E INSERA NA ORDEM CORRETO */
         while (aux->nextTime != NULL && converteHmsEmSegundos(aux->nextTime->cel.chegada.hh, aux->nextTime->cel.chegada.mm, aux->nextTime->cel.chegada.ss) < tempo){
             aux = aux->nextTime;
         }
+        /* INSERÇÃO NA ORDEM CORRETA */
         novoObjeto->nextTime = aux->nextTime;
         aux->nextTime = novoObjeto;
     }

@@ -19,6 +19,7 @@ int main(){
     /* APÓS A LEITURA DO COMANDO, TEMOS O LAÇO PARA ITERAR 
     ATÉ QUE O COMANDO SEJA IGUAL A QUIT E ENCERRA O PROGRAMA */
     scanf("%s", comando);
+    /* INTERAÇÃO DO WHILE ATÉ QUE SEJA INSERIDO UM QUIT */
     while (strcmp(comando, "quit") != 0){
         menu(comando, lista);
     }
