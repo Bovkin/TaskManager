@@ -15,10 +15,11 @@ int main(){
 
     char comando[50];
 
-    /* Criação da cabeça com nulo */
+    /* CRIAÇÃO DA CABEÇA COM NULO */
     cabeca.nextTime = NULL;
     cabeca.nextPrioridade = NULL;
-    /* Apontando a lista para cabeça */
+
+    /* APONTANDO A LISTA PARA CABEÇA */
     lista = &cabeca;
 
     /* REALIZA A LEITURA DO PRIMEIRO COMANDO */
